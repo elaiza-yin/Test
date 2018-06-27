@@ -5,6 +5,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 # 在终端输入: pip install flask-session,再去导入 Session
 # 作用:可以用来指定 session 保存的位置
 from flask_session import Session
+from flask_script import Manager
 
 
 class Config(object):
@@ -50,6 +51,9 @@ redis_store = StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
 CSRFProtect(app)
 # 5.设置session保存指定位置
 Session(app)
+# 6.设置成命令行执行代码的方式:manager
+# 作用:可以添加 数据库迁移 的功能,因为要用到命令的方式
+manager = Manager(app)
 
 
 @app.route("/")
@@ -59,4 +63,5 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run()
+    # 如果想右键运行:可以将runserver添加到 manger.py的 Script parameters(在Edit Configurations里)
+    manager.run()
