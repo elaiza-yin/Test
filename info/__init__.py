@@ -1,9 +1,10 @@
 from flask import Flask
+# 在终端输入: pip install flask-session,再去导入 Session
+# 作用:可以用来指定 session 保存的位置
 from flask.ext.session import Session
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import CSRFProtect
 from redis import StrictRedis
-
 from information.config import Config
 
 
