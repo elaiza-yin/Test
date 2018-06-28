@@ -1,3 +1,6 @@
+import logging
+
+from flask import current_app
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from information.info import creat_app ,db
@@ -16,7 +19,17 @@ manager.add_command('db', MigrateCommand)  # 将迁移命令添加到manager
 @app.route("/")
 def index():
     # session['name'] = 'elaiza'  # 测试redis数据
-    return "index"
+
+    # 测试打印日志
+    logging.debug('测试debug')
+    logging.warning('测试warning')
+    logging.error('测试error')
+    logging.fatal('测试fatal')
+
+    # 当前应用程序的logger会根据应用程序的调试状态去调整日志级别
+    # 在flask下面输出日志
+    current_app.logger.error('测试error')
+    return "阿根廷"
 
 
 if __name__ == "__main__":
