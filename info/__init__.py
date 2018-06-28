@@ -1,6 +1,5 @@
 import logging
 from logging.handlers import RotatingFileHandler
-
 from flask import Flask
 # 在终端输入: pip install flask-session,再去导入 Session
 # 作用:可以用来指定 session 保存的位置
@@ -9,10 +8,10 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import CSRFProtect
 from redis import StrictRedis
 from information.config import config
+from information.info.modules.index import index_blu
 
-
-# 初始化数据库
 # 在Flask很多拓展里面都可以可以初始化扩展的对象,然后再去调用 init_app 方法初始化
+# 初始化数据库
 db = SQLAlchemy()
 
 
@@ -44,6 +43,9 @@ def creat_app(config_name):
     CSRFProtect(app)
     # 5.设置session保存指定位置
     Session(app)
+
+    # 注册蓝图
+    app.register_blueprint(index_blu)
 
     return app
 
