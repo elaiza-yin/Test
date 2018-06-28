@@ -7,37 +7,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-
-
-class Config(object):
-    """1.项目配置"""
-    DEBUG = True
-
-    """
-    生成方法: import os , base64
-              base64.b64encoode(os.urandom(48))
-    """
-    # 5.6 使用Session就要设置 SECRET_KEY
-    SECRET_KRY = 'q4fMRVYRGIf4PArUvH+lzfY1MyUnXO5uiHMaguO05iX4+F+4eqLQWUxi0RigqomR'
-
-    # 2.为 Mysql 添加配置
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/information'
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
-
-    # 3.为 Redis 配置
-    REDIS_HOST = '127.0.0.1'
-    REDIS_PORT = 6379
-
-    # 5.1 Session保存配置
-    SESSION_TYPE = 'redis'
-    # 5.2 开启Session签名
-    SESSION_USE_SIGNER = True
-    # 5.3 指定Session保存到redis
-    SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
-    # 5.4 设置需要过期
-    SESSION_PERMANENT = False
-    # 5.5 设置过期时间
-    PERMANENT_SESSION_LIFETIME = 86400 * 2
+from config import Config
 
 
 app = Flask(__name__)
@@ -55,17 +25,17 @@ Session(app)
 # 6.设置成命令行执行代码的方式:manager
 # 作用:可以添加 数据库迁移 的功能,因为要用到命令的方式
 manager = Manager(app)
-# 7.数据库的迁移
-Migrate(app, db)
-manager.add_command('db', MigrateCommand)
+# # 7.数据库的迁移
+Migrate(app, db)  # 将app 与 db 关联
+manager.add_command('db', MigrateCommand)  # 将迁移命令添加到manager
 
 
 @app.route("/")
 def index():
-    session['name'] = 'elaiza'
+    # session['name'] = 'elaiza'  # 测试redis数据
     return "index"
 
 
 if __name__ == "__main__":
-    # 如果想右键运行:可以将runserver添加到 manger.py的 Script parameters(在Edit Configurations里)
+    # 如果想右键运行:可以将runserver添加到 manager.py的 Script parameters(在Edit Configurations里)
     manager.run()
