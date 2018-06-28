@@ -12,11 +12,11 @@ class Config(object):
     # 5.6 使用Session就要设置 SECRET_KEY
     SECRET_KRY = 'q4fMRVYRGIf4PArUvH+lzfY1MyUnXO5uiHMaguO05iX4+F+4eqLQWUxi0RigqomR'
 
-    # 2.为 Mysql 添加配置
+    # 为 Mysql 添加配置
     SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/information'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-    # 3.为 Redis 配置
+    # 为 Redis 配置
     REDIS_HOST = '127.0.0.1'
     REDIS_PORT = 6379
 
