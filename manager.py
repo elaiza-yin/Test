@@ -21,8 +21,8 @@ class Config(object):
     SECRET_KRY = 'q4fMRVYRGIf4PArUvH+lzfY1MyUnXO5uiHMaguO05iX4+F+4eqLQWUxi0RigqomR'
 
     # 2.为 Mysql 添加配置
-    SQLAlchemy_DATABASE_URL = 'mysql://root:mysql@127.0.0.1:3306/information'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/information'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     # 3.为 Redis 配置
     REDIS_HOST = '127.0.0.1'
@@ -58,6 +58,7 @@ manager = Manager(app)
 # 7.数据库的迁移
 Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+
 
 @app.route("/")
 def index():
