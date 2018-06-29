@@ -1,5 +1,6 @@
+from flask import current_app
 from flask import render_template
-from info import redis_store
+# from info import redis_store
 from . import index_blu
 
 
@@ -11,3 +12,8 @@ def index():
     # redis_store.set('age',21)
 
     return render_template('/news/index.html')
+
+
+@index_blu.route('/favicon.ico')
+def favicon():
+    return current_app.send_static_file('news/favicon.ico')

@@ -9,7 +9,7 @@ from info import creat_app, db, models
 app = creat_app('development')
 # 设置成命令行执行代码的方式:manager
 manager = Manager(app)
-# 数据库的迁移
+# 数据库的迁
 Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
