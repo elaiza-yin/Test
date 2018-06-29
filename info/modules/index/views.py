@@ -1,3 +1,4 @@
+from flask import render_template
 from info import redis_store
 from . import index_blu
 
@@ -6,7 +7,7 @@ from . import index_blu
 def index():
     # 需求:向redis中保存一个值
     # 如果redis_store. 没有智能提示可以到 __init__.py里的redis_store 后面加个变量注释 ==> type:StrictRedis
-    redis_store.set('name','elaiza')
-    redis_store.set('age',21)
+    # redis_store.set('name','elaiza')
+    # redis_store.set('age',21)
 
-    return "阿根廷"
+    return render_template('/news/index.html')
