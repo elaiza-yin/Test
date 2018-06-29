@@ -3,17 +3,18 @@ $(function(){
 	// 打开登录框
 	$('.login_btn').click(function(){
         $('.login_form_con').show();
-	})
+	});
 	
 	// 点击关闭按钮关闭登录框或者注册框
 	$('.shutoff').click(function(){
 		$(this).closest('form').hide();
-	})
+	});
 
     // 隐藏错误
     $(".login_form #mobile").focus(function(){
         $("#login-mobile-err").hide();
     });
+
     $(".login_form #password").focus(function(){
         $("#login-password-err").hide();
     });
@@ -35,7 +36,7 @@ $(function(){
 	// 点击输入框，提示文字上移
 	$('.form_group').on('click focusin',function(){
 		$(this).children('.input_tip').animate({'top':-5,'font-size':12},'fast').siblings('input').focus().parent().addClass('hotline');
-	})
+	});
 
 	// 输入框失去焦点，如果输入框为空，则提示文字下移
 	$('.form_group input').on('blur focusout',function(){
@@ -45,14 +46,14 @@ $(function(){
 		{
 			$(this).siblings('.input_tip').animate({'top':22,'font-size':14},'fast');
 		}
-	})
+	});
 
 
 	// 打开注册框
 	$('.register_btn').click(function(){
 		$('.register_form_con').show();
 		generateImageCode()
-	})
+	});
 
 
 	// 登录框和注册框切换
@@ -60,13 +61,13 @@ $(function(){
 		$('.login_form_con').hide();
 		$('.register_form_con').show();
         generateImageCode()
-	})
+	});
 
 	// 登录框和注册框切换
 	$('.to_login').click(function(){
 		$('.login_form_con').show();
 		$('.register_form_con').hide();
-	})
+	});
 
 	// 根据地址栏的hash值来显示用户中心对应的菜单
 	var sHash = window.location.hash;
@@ -91,7 +92,7 @@ $(function(){
 		}
 		$(this).addClass('active').siblings().removeClass('active');
 		$(this).find('a')[0].click()
-	})
+	});
 
     // TODO 登录表单提交
     $(".login_form_con").submit(function (e) {
@@ -110,7 +111,7 @@ $(function(){
         }
 
         // 发起登录请求
-    })
+    });
 
 
     // TODO 注册按钮点击
@@ -146,12 +147,20 @@ $(function(){
         // 发起注册请求
 
     })
-})
+});
 
 var imageCodeId = ""
 
 // TODO 生成一个图片验证码的编号，并设置页面中图片验证码img标签的src属性
 function generateImageCode() {
+    // 1. 生成一个编号
+    imageCodeId = generateUUID();
+
+    // 2. 拼接验证代码地址
+    var imageCodeUrl = '/image_code?code_id=' + imageCodeId;
+
+    // 3. 设置页面中图片验证码img标签的scr属性
+    $('.get_pic_code').attr('src',imageCodeUrl)
 
 }
 
