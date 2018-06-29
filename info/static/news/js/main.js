@@ -157,7 +157,7 @@ function generateImageCode() {
     imageCodeId = generateUUID();
 
     // 2. 拼接验证代码地址
-    var imageCodeUrl = '/image_code?code_id=' + imageCodeId;
+    var imageCodeUrl = '/passport/image_code?imageCodeId=' + imageCodeId;
 
     // 3. 设置页面中图片验证码img标签的scr属性
     $('.get_pic_code').attr('src',imageCodeUrl)
