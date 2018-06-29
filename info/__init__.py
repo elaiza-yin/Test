@@ -7,7 +7,7 @@ from flask.ext.session import Session
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import CSRFProtect
 from redis import StrictRedis
-from information.config import config
+from config import config
 
 
 # 在Flask很多拓展里面都可以可以初始化扩展的对象,然后再去调用 init_app 方法初始化
@@ -16,7 +16,6 @@ db = SQLAlchemy()
 
 # 变量的注释
 redis_store = None  # type: StrictRedis
-
 
 
 def setup_log(config_name):
@@ -51,8 +50,8 @@ def creat_app(config_name):
     Session(app)
 
     # 注册蓝图
-    # 什么时候用什么时候导入:index_blu
-    from information.info.modules.index import index_blu
+    # 什么时候用什么时候导入:index_blu(避免循环导入)
+    from info.modules.index import index_blu
     app.register_blueprint(index_blu)
 
     return app
