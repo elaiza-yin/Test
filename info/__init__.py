@@ -51,10 +51,10 @@ def creat_app(config_name):
 
     # 注册蓝图
     # 什么时候用什么时候导入:index_blu(避免循环导入)
-    from information.info.modules.index import index_blu
+    from info.modules.index import index_blu
     app.register_blueprint(index_blu)
 
-    from information.info.modules.passport import passport_blu
+    from info.modules.passport import passport_blu
     app.register_blueprint(passport_blu)
 
     return app

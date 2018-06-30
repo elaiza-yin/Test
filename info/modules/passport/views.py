@@ -5,12 +5,12 @@ from flask import abort, jsonify
 from flask import current_app
 from flask import make_response
 from flask import request
-from information.info import constants
-from information.info import redis_store
-from information.info.utils.response_code import RET
-from information.libs.yuntongxun.sms import CCP
+from info import constants
+from info import redis_store
+from info.utils.response_code import RET
+from libs.yuntongxun.sms import CCP
 from . import passport_blu
-from information.info.utils.captcha.captcha import captcha
+from info.utils.captcha.captcha import captcha
 
 
 @passport_blu.route('/sms_code',methods=['POST'])

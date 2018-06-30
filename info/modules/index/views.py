@@ -1,6 +1,6 @@
 from flask import current_app
 from flask import render_template
-# from information.info import redis_store
+# from info import redis_store
 from . import index_blu
 
 
