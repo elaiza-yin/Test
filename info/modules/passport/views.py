@@ -30,11 +30,12 @@ def get_image_code():
 
     # 4.保存图片验证码到redis
     try:
+        # constants.IMAGE_CODE_REDIS_EXPIRES 是过期时间,不能写死,300秒存在constants
         redis_store.set('ImageCodeId_' + image_code_id, text, constants.IMAGE_CODE_REDIS_EXPIRES )
 
     except Exception as e:
         current_app.logger.error(e)  # flask 自带的打印日志
-        # abort(500)
+        abort(500)
 
     # 5.返回验证码图片
     response = make_response(image)
