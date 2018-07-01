@@ -26,8 +26,8 @@ def send_sms_code():
     7. 告知发送结果
     :return:
     """
-    # 1. 获取参数:手机号,用户输入的图片验证码.图片验证码的编号
-    params_dict = request.json  # params_dict = json.loads(request.data)
+    # 1. 获取参数:手机号,用户输入的图片验证码,图片验证码的编号
+    params_dict = request.json  # params_dict = json.loads(request.data) 获取参数的第二种方法
     mobile = params_dict.get('mobile')
     image_code = params_dict.get('image_code')
     image_code_id= params_dict.get('image_code_id')
@@ -35,7 +35,7 @@ def send_sms_code():
     # 2. 校验参数(参数是否符合规则,判断是否有值)
     # 判断参数是否有值
     if not all([mobile,image_code,image_code_id]):
-        # {'errno':'4100','errmsg':'参数有误'}
+        # 返回的jsonify格式数据:{'errno':'4100','errmsg':'参数有误'}
         return jsonify(errno=RET.PARAMERR,errms='参数有误')
     # 判断用户输入的手机号码是否正确
     if not re.match('1[356789]\\d{9}',mobile):
@@ -88,8 +88,9 @@ def get_image_code():
     5.返回验证码图片
     :return:
     """
-    # 1.取到参数(args:取到imageCodeUrl中 ? 后面的参数 )
+    # 1.取到参数(args:取到imageCodeUrl中 ? 后面的参数 ),没有会返回None
     image_code_id = request.args.get('imageCodeId', None)
+    # print(image_code_id) 测试
 
     # 2.判断参数是否有值
     if not image_code_id:
