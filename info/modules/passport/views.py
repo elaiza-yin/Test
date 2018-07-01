@@ -26,6 +26,9 @@ def send_sms_code():
     7. 告知发送结果
     :return:
     """
+    ######## 下方一行代码用于测试 : 直接表示发送成功########
+    # return jsonify(errno=RET.OK, errmsg='发送成功')
+
     # 1. 获取参数:手机号,用户输入的图片验证码,图片验证码的编号
     params_dict = request.json  # params_dict = json.loads(request.data) 获取参数的第二种方法
     mobile = params_dict.get('mobile')

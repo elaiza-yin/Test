@@ -170,12 +170,12 @@ function generateImageCode() {
 // 发送短信验证码
 function sendSMSCode() {
     // 校验参数，保证输入框有数据填写
-    $(".get_code").removeAttr("onclick");
+    $(".get_code").removeAttr("onclick");  // 移除get_code标签的点击事件
     var mobile = $("#register_mobile").val();
     if (!mobile) {
-        $("#register-mobile-err").html("请填写正确的手机号！");
+        $("#register-mobile-err").html("请填写正确的手机号！");  // 通过标签内容显示电话格式错误
         $("#register-mobile-err").show();
-        $(".get_code").attr("onclick", "sendSMSCode();");
+        $(".get_code").attr("onclick", "sendSMSCode();");  // 把get_code标签的点击事件加了回去
         return;
     }
     var imageCode = $("#imagecode").val();
@@ -186,7 +186,47 @@ function sendSMSCode() {
         return;
     }
 
-    // TODO 发送短信验证码
+    // 发送短信验证码
+    var params = {
+        'mobile':mobile,
+        'image_code':imageCode,
+        'image_code_id':imageCodeId
+    };
+
+    // 发起注册请求
+    $.ajax({
+        url:'/passport/sms_code',
+        type:'post',
+        data:JSON.stringify(params),
+        contentType:'application/json',
+        success:function (respsonse) {
+            if (respsonse.errno == '0'){
+                // 发送成功
+                var num = 60
+                var t = setInterval(function(){
+                    if (num == 1){
+                        // 设置倒计时结束
+                        // 清除倒计时
+                        clearInterval(t);
+                        // 设置显示内容
+                        $('.get_code').html('点击获取验证码');
+                        // 给get_code标签添加点击事件属性
+                        $('.get_code').attr('onclick','sendSMSCode();');
+                    }else {
+                        num -= 1 ;
+                        // 设置 a 标签显示的内容
+                        $('.get_code').html(num +'秒')
+                    }
+                },1000)
+            }else{
+                // 表示发送失败
+                alert(respsonse.errmsg);
+                $('.get_code').attr('onclick','sendSMSCode();');
+
+            }
+        }
+
+    })
 }
 
 // 调用该函数模拟点击左侧按钮
