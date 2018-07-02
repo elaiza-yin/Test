@@ -132,6 +132,9 @@ $(function(){
             type: "post",
             contentType: "application/json",
             data: JSON.stringify(params),
+            headers: {
+            "X-CSRFToken": getCookie("csrf_token")
+            },
             success: function(resp) {
                 if (resp.errno == "0"){
                     // 表示登入成功
@@ -189,6 +192,9 @@ $(function(){
             contentType: "application/json",
             header: "",
             data: JSON.stringify(params),
+            headers: {
+            "X-CSRFToken": getCookie("csrf_token")
+            },
             success: function(resp) {
                 if (resp.errno == '0'){
                     // 表示注册成功
@@ -252,6 +258,9 @@ function sendSMSCode() {
         type:'post',
         data:JSON.stringify(params),
         contentType:'application/json',
+        headers: {
+            "X-CSRFToken": getCookie("csrf_token")
+        },
         success:function (resp) {
             if (resp.errno == '0'){
                 // 发送成功
@@ -295,6 +304,9 @@ function logout() { // post方式的请求
         url: "/passport/logout",
         type: "post",
         contentType: "application/json",
+        headers: {
+            "X-CSRFToken": getCookie("csrf_token")
+        },
         success: function(resp) {
             location.reload()
         }

@@ -70,6 +70,17 @@ def login():
     session["mobile"] = user.mobile
     session["nick_name"] = user.nick_name
 
+    # 设置当前用户最后一次登入的时间
+    user.last_login = datetime.now()
+
+    # 数据库有配置 SQLALCHEMY_COMMIT_ON_TEARDOWN = True 时不用手动提交commit()
+    # try:
+    #     db.session.commit()
+    # except Exception as e:
+    #     db.session.rollback()
+    #     current_app.logger.error(e)
+    #
+
     # 5. 响应
     return jsonify(errno=RET.OK,errmsg="登入成功")
 

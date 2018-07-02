@@ -46,17 +46,17 @@ def creat_app(config_name):
     global redis_store
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT,decode_responses=True)
     # 4.开启当前项目的 CSRF 保护,只做服务器验证功能(所有的请求都会经过before_request请求勾子)
-    # CSRFProtect(app)
+    CSRFProtect(app)
     # 5.设置session保存指定位置
     Session(app)
 
-    # @app.after_request
-    # def after_request(response):
-    #     # 生成随机的csrf_token的值
-    #     csrf_token = generate_csrf()
-    #     # 设置一个cookie
-    #     response.set_cookie("csrf_token",csrf_token)
-    #     return response
+    @app.after_request
+    def after_request(response):
+        # 生成随机的csrf_token的值
+        csrf_token = generate_csrf()
+        # 设置一个cookie
+        response.set_cookie("csrf_token",csrf_token)
+        return response
 
     # 注册蓝图
     # 什么时候用什么时候导入:index_blu(避免循环导入)
