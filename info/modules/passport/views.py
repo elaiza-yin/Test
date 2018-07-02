@@ -17,6 +17,16 @@ from . import passport_blu
 from info.utils.captcha.captcha import captcha
 
 
+@passport_blu.route('/logout',methods=["POST"])
+def logout():
+    """退出登入也算修后端数据,可以用POST方法"""
+    session.pop('user_id',None)
+    session.pop('mobile',None)
+    session.pop('nick_name',None)
+
+    return jsonify(errno=RET.OK,errmsg="退出成功")
+
+
 @passport_blu.route('/login' ,methods=["POST"])
 def login():
     """

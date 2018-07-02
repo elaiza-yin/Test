@@ -282,6 +282,25 @@ function sendSMSCode() {
     })
 }
 
+// 登出的函数(get方式的请求)
+// function logout() {
+//     $.get("/passport/logout", function (resp) {
+//         location.reload()
+//     });
+//
+// }
+
+function logout() { // post方式的请求
+    $.ajax({
+        url: "/passport/logout",
+        type: "post",
+        contentType: "application/json",
+        success: function(resp) {
+            location.reload()
+        }
+    })
+}
+
 // 调用该函数模拟点击左侧按钮
 function fnChangeMenu(n) {
     var $li = $('.option_list li');
