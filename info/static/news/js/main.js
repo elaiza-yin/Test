@@ -166,6 +166,7 @@ $(function(){
             url: "/passport/register",
             type: "post",
             contentType: "application/json",
+            header: "",
             data: JSON.stringify(params),
             success: function(resp) {
                 if (resp.errno == '0'){

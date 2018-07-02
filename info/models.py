@@ -67,6 +67,7 @@ class User(BaseModel, db.Model):
         self.password_hash = generate_password_hash(value)
 
     def check_passowrd(self, password):
+        """校验密码"""
         return check_password_hash(self.password_hash, password)
 
     def to_dict(self):
