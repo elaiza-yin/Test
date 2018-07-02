@@ -17,6 +17,7 @@ from libs.yuntongxun.sms import CCP
 from . import passport_blu
 from info.utils.captcha.captcha import captcha
 
+
 @passport_blu.route('/register',methods=["POST"])
 def register():
     """
@@ -33,8 +34,8 @@ def register():
     # 1. 获取参数
     param_dict = request.json
     mobile = param_dict.get('mobile')
-    smscode = passport_blu.get('smscode')
-    password = passport_blu.get('password')
+    smscode = param_dict.get('smscode')
+    password = param_dict.get('password')
 
     # 2. 校验参数
     if not all([mobile,smscode,password]):
@@ -64,7 +65,8 @@ def register():
     user.nick_name = mobile
     # 记录用户最后一次登陆时间
     user.last_login = datetime.now()
-    # TODO 对密码做处理
+    # 对密码做加密处理
+    user.password = password
 
     # 6. 添加到数据库
     try:
@@ -75,14 +77,14 @@ def register():
         db.session.rollback()
         return jsonify(errno=RET.DBERR,errmsg='数据保存失败')
 
-
-    # 7. 往session中保存数据就表示当前是已登入状态
-    session['user_id'] = user.id
-    session['mobile'] = user.mobile
-    session['nick_name'] = user.nick_name
+    # 7. 往session中保存数据就表示当前是 "已登入状态"
+    session["user_id"] = user.id
+    session["mobile"] = user.mobile
+    session["nick_name"] = user.nick_name
 
     # 8. 返回响应
-    return jsonify(errno=RET.OK,errmsg='注册成功')
+    return jsonify(errno=RET.OK ,errmsg='注册成功')
+
 
 @passport_blu.route('/sms_code',methods=['POST'])
 def send_sms_code():
@@ -135,10 +137,10 @@ def send_sms_code():
     current_app.logger.debug('短信验证码内容是: %s' % sms_code_str)
 
     # 6. 发送短信验证码
-    result = CCP().send_template_sms(mobile,[sms_code_str,constants.SMS_CODE_REDIS_EXPIRES /60 ],1)
-    if result == 0:
-        # result = 0 表示验证码发送失败
-        return jsonify(errno=RET.THIRDERR,errmsg="验证码d短信发送失败")
+    # result = CCP().send_template_sms(mobile,[sms_code_str,constants.SMS_CODE_REDIS_EXPIRES /60 ],1)
+    # if result == 0:
+    #     # result = 0 表示验证码发送失败
+    #     return jsonify(errno=RET.THIRDERR,errmsg="验证码短信发送失败")
 
     # 6-7. 保存短信验证码到redis里
     try:
@@ -171,8 +173,8 @@ def get_image_code():
         return abort(403)
 
     # 3.生成图片验证码(导入captcha.py里的函数)
-    name, text, image = captcha.generate_captcha()
-
+    name, text, image = captcha.generate_captcha() # 用于注册按钮的测试,方便查看验证码
+    current_app.logger.debug("图片验证码是: %s" % text)
     # 4.保存图片验证码到redis
     try:
         # constants.IMAGE_CODE_REDIS_EXPIRES 是过期时间,不能写死,300秒存在constants 的参数信息

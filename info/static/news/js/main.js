@@ -37,9 +37,17 @@ $(function(){
 
 
 	// 点击输入框，提示文字上移
-	$('.form_group').on('click focusin',function(){
-		$(this).children('.input_tip').animate({'top':-5,'font-size':12},'fast').siblings('input').focus().parent().addClass('hotline');
-	});
+	// $('.form_group').on('click focusin',function(){
+	// 	$(this).children('.input_tip').animate({'top':-5,'font-size':12},'fast').siblings('input').focus().parent().addClass('hotline');
+	// });
+    $('.form_group').on('click',function(){
+    $(this).children('input').focus()
+    });
+
+    $('.form_group input').on('focusin',function(){
+    $(this).siblings('.input_tip').animate({'top':-5,'font-size':12},'fast');
+    $(this).parent().addClass('hotline');
+    });
 
 	// 输入框失去焦点，如果输入框为空，则提示文字下移
 	$('.form_group input').on('blur focusout',function(){
@@ -120,12 +128,12 @@ $(function(){
     // TODO 注册按钮点击
     $(".register_form_con").submit(function (e) {
         // 阻止默认提交操作
-        e.preventDefault()
+        e.preventDefault();
 
 		// 取到用户输入的内容
-        var mobile = $("#register_mobile").val()
-        var smscode = $("#smscode").val()
-        var password = $("#register_password").val()
+        var mobile = $("#register_mobile").val();
+        var smscode = $("#smscode").val();
+        var password = $("#register_password").val();
 
 		if (!mobile) {
             $("#register-mobile-err").show();
@@ -147,7 +155,30 @@ $(function(){
             return;
         }
 
-        // 发起注册请求
+        // ajax 参数准备
+        var params = {
+		    "mobile" : mobile,
+            "smscode": smscode,
+            "password": password
+        };
+
+        $.ajax({
+            url: "/passport/register",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(params),
+            success: function(resp) {
+                if (resp.errno == '0'){
+                    // 表示注册成功
+                    location.reload();
+                } else {
+                    // 表示注册失败
+                    alert(resp.errmsg);
+                    $("#register-image-password-err").html(resp.errmsg);
+                    $("#register-image-password-err").show();
+                }
+            }
+        })
 
     })
 });
@@ -199,10 +230,10 @@ function sendSMSCode() {
         type:'post',
         data:JSON.stringify(params),
         contentType:'application/json',
-        success:function (respsonse) {
-            if (respsonse.errno == '0'){
+        success:function (resp) {
+            if (resp.errno == '0'){
                 // 发送成功
-                var num = 60
+                var num = 60;
                 var t = setInterval(function(){
                     if (num == 1){
                         // 设置倒计时结束
@@ -220,7 +251,7 @@ function sendSMSCode() {
                 },1000)
             }else{
                 // 表示发送失败
-                alert(respsonse.errmsg);
+                alert(resp.errmsg);
                 $('.get_code').attr('onclick','sendSMSCode();');
 
             }

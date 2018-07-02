@@ -4,7 +4,6 @@ from redis import StrictRedis
 
 class Config(object):
     """1.项目配置"""
-    DEBUG = True
 
     """
     生成方法: import os , base64
@@ -15,7 +14,7 @@ class Config(object):
 
     # 为 Mysql 添加配置
     SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/information'
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # 为 Redis 配置
     REDIS_HOST = '127.0.0.1'

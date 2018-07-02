@@ -58,11 +58,11 @@ class User(BaseModel, db.Model):
     # 当前用户所发布的新闻
     news_list = db.relationship('News', backref='user', lazy='dynamic')
 
-    @property
+    @property   # 取
     def password(self):
         raise AttributeError("当前属性不可读")
 
-    @password.setter
+    @password.setter  # 设
     def password(self, value):
         self.password_hash = generate_password_hash(value)
 
