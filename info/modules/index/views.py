@@ -3,7 +3,7 @@ from flask import render_template
 # from info import redis_store
 from flask import session
 
-from info.models import User
+from info.models import User, News
 from . import index_blu
 
 
@@ -14,10 +14,10 @@ def index():
     # redis_store.set('name','elaiza')
     # redis_store.set('age',21)
     """
-    登入成功显示右上角
+    显示首页
     :return:
     """
-    # 因为登入成功会有数据保存到session里
+    # 1.(显示用户是否登入的逻辑)因为登入成功会有数据保存到session里
     user_id = session.get("user_id",None)
     user = None
     if user_id:
@@ -26,8 +26,21 @@ def index():
         except Exception as e:
             current_app.logger.error(e)
 
+    # 2.右侧的新闻排行的逻辑(new_list是模型数据,也是对象)
+    try:
+        news_list = News.query.order_by(News.clicks.desc()).limit(6)
+    except Exception as e:
+        current_app.logger.error(e)
+
+    news_list_li = []
+    # 遍历对象列表,将对象的字典添加到字典列表中
+    for news in news_list:
+        news_list_li.append(news.to_basic_dict())
+
+
     data = {
-        "user": user.to_dict() if user else None
+        "user" : user.to_dict() if user else None,
+        "news_dict_li" : news_list_li
     }
 
     return render_template('/news/index.html',data=data)
