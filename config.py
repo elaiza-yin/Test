@@ -4,7 +4,10 @@ from redis import StrictRedis
 
 class Config(object):
     """项目的配置"""
-
+    """
+        生成方法: import os , base64
+                  base64.b64encoode(os.urandom(48))
+    """
     SECRET_KEY = "iECgbYWReMNxkRprrzMo5KAQYnb2UeZ3bwvReTSt+VSESW0OB8zbglT+6rEcDW9X"
 
     # 为数据库添加配置

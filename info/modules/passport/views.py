@@ -6,7 +6,7 @@ from flask import abort, jsonify
 from flask import current_app
 from flask import make_response
 from flask import request
-from flask import json, session
+from flask import session
 
 from info import constants, db
 from info import redis_store
@@ -36,7 +36,7 @@ def login():
     # 2. 校验参数
     if not all([mobile,password]):
         return jsonify(errno=RET.PARAMERR,errmsg="参数错误")
-
+    # 校验电话号码格式
     if not re.match('1[356789]\\d{9}', mobile):
         return jsonify(errno=RET.PARAMERR, errmsg='手机号码格式不正确')
 

@@ -105,7 +105,7 @@ $(function(){
 		$(this).find('a')[0].click()
 	});
 
-    // TODO 登录表单提交
+    //  登录表单提交
     $(".login_form_con").submit(function (e) {
         e.preventDefault();
         var mobile = $(".login_form #mobile").val();
@@ -126,6 +126,7 @@ $(function(){
             "mobile":mobile,
             "password":password
         };
+
         $.ajax({
             url: "/passport/login",
             type: "post",
@@ -136,7 +137,7 @@ $(function(){
                     // 表示登入成功
                     location.reload()
                 }else {
-                    alert(resp.errmsg)
+                    alert(resp.errmsg);
                     $("#login-password-err").html(resp.errmsg);
                     $("#login-password-err").show();
                 }
