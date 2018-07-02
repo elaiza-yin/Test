@@ -1,4 +1,3 @@
-
 import random
 import re
 from datetime import datetime
@@ -7,7 +6,7 @@ from flask import abort, jsonify
 from flask import current_app
 from flask import make_response
 from flask import request
-from flask import session
+from flask import json, session
 
 from info import constants, db
 from info import redis_store
