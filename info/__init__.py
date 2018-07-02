@@ -8,6 +8,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import CSRFProtect
 from flask.ext.wtf.csrf import generate_csrf
 from redis import StrictRedis
+
+from info.utils.common import do_index_class
 from information.config import config
 
 
@@ -49,6 +51,9 @@ def creat_app(config_name):
     CSRFProtect(app)
     # 5.设置session保存指定位置
     Session(app)
+
+    # 添加自定义过滤器
+    app.add_template_filter(do_index_class ,"index_class")
 
     @app.after_request
     def after_request(response):

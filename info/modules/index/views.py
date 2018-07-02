@@ -28,15 +28,15 @@ def index():
 
     # 2.右侧的新闻排行的逻辑(new_list是模型数据,也是对象)
     try:
+        # 搜索数据库 : 按照最高点记率,排序6个
         news_list = News.query.order_by(News.clicks.desc()).limit(6)
     except Exception as e:
         current_app.logger.error(e)
-
+    # 因为news_list是模型对象,要转化成字典传给index.html
     news_list_li = []
     # 遍历对象列表,将对象的字典添加到字典列表中
     for news in news_list:
         news_list_li.append(news.to_basic_dict())
-
 
     data = {
         "user" : user.to_dict() if user else None,
