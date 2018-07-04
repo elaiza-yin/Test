@@ -5,7 +5,7 @@ from flask import request
 from flask import session
 
 from info import constants
-from info.models import User, News
+from info.models import User, News, Category
 from info.utils.response_code import RET
 from . import index_blu
 
@@ -13,11 +13,12 @@ from . import index_blu
 @index_blu.route('/news_list')
 def get_news_list():
     """首页新闻刷新"""
-    # 1. 获取参数
+    # 1. 获取参数(get方式要用 args 获取浏览器?后缀的数据)
     cid = request.args.get("cid", "1")
     page = request.args.get("page", "1")
     per_page = request.args.get("per_page", "10")
-
+    # 数据的测试
+    print("分类:%s   第%s页  每页%s条数据" % (cid,page,per_page))
     # 2. 校验参数
     try:
         page = int(page)
@@ -29,12 +30,13 @@ def get_news_list():
 
     # 3. 查询数据并分页
     filters = []
-    if cid != 1:  # 查询的不是最新的数据
-        # 需要添加条件
+    if cid != 1:  # 查询的不是"最新分类"的数据
+        # 添加分类id的过滤
         filters.append(News.category_id == cid)
     try:
+        # 返回一个Paginate对象，它包含指定范围内的结果
         paginate = News.query.filter(*filters).order_by(News.create_time.desc()).paginate(page,per_page,False)
-        # 取到当前页面的数据
+        # Paginate对象有一下几个方法:取到当前页面的数据
         items = paginate.items  # 当前页数据(模型对象列表)
         total_page = paginate.pages  # 总页数
         current_page = paginate.page  # 当前页
@@ -71,13 +73,15 @@ def index():
     if user_id:
         try:
             user = User.query.get(user_id)
+            print("判断用户是否登入的查询:%s" %user)  # 测试:打印的是:<User 24>对象
         except Exception as e:
             current_app.logger.error(e)
 
     # 二:右侧的新闻排行的逻辑(new_list是模型数据,也是对象)
     try:
         # 搜索数据库 : 按照最高点记率,排序6个
-        news_list = News.query.order_by(News.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS)
+        news_list = News.query.order_by(News.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS).all()
+        print("排行的新闻查询:%s" %news_list)  # 打印的是对象
     except Exception as e:
         current_app.logger.error(e)
 
@@ -87,10 +91,20 @@ def index():
     for news in news_list:
         news_list_li.append(news.to_basic_dict())
 
-    # 一和二共同存放数据的data字典容器
+    # 三:分类数据的新闻的显示(查询分类数据,通过模板形式渲染出来)
+    categories = Category.query.all()
+
+    category_li = []
+    for category in categories:
+        category_li.append(category.to_dict())
+
+
+    # 一和二和三共同存放数据的data字典容器
     data = {
+        #  实例对象user去调用函数to_dict()
         "user" : user.to_dict() if user else None,
-        "news_dict_li" : news_list_li
+        "news_dict_li" : news_list_li,
+        "category_li" : category_li
     }
 
     return render_template('/news/index.html',data=data)

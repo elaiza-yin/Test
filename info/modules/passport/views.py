@@ -55,6 +55,7 @@ def login():
     try:
         user = User.query.filter(User.mobile == mobile).first()
     except Exception as e:
+        # current_app应用上下文
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR,errmsg="数据查询错误")
     # 判断用户是否存在
@@ -232,16 +233,20 @@ def get_image_code():
     :return:
     """
     # 1.取到参数(args:取到imageCodeUrl中 ? 后面的参数 ),没有会返回None
+    # 到get_pic_code的标签去找，并可以看到main_js拼接的每个验证码对应的UUID
     image_code_id = request.args.get('imageCodeId', None)
-    # print(image_code_id) 测试
+    # print(image_code_id)
 
-    # 2.判断参数是否有值
+    # 2.判断UUID参数是否有值
     if not image_code_id:
         return abort(403)
 
     # 3.生成图片验证码(导入captcha.py里的函数)
-    name, text, image = captcha.generate_captcha() # 用于注册按钮的测试,方便查看验证码
+    name, text, image = captcha.generate_captcha()
+    # 用于注册按钮的测试,方便查看验证码
     current_app.logger.debug("图片验证码是: %s" % text)
+    current_app.logger.debug(": %s" % name)
+
     # 4.保存图片验证码到redis
     try:
         # constants.IMAGE_CODE_REDIS_EXPIRES 是过期时间,不能写死,300秒存在constants 的参数信息
@@ -251,7 +256,7 @@ def get_image_code():
         current_app.logger.error(e)  # flask 自带的打印日志
         abort(500)
 
-    # 5.返回验证码图片
+    # 5.返回验证码图片(标明返回的是图片格式)
     response = make_response(image)
     response.headers['Content-Type'] = 'image/jpg'
     return response

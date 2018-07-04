@@ -213,7 +213,7 @@ $(function(){
 
 var imageCodeId = "";
 
-// 生成一个图片验证码的编号，并设置页面中图片验证码img标签的src属性
+// 生成一个图片验证码的UUID编号，并设置页面中图片验证码img标签的src属性
 function generateImageCode() {
     // 1. 生成一个编号(UUID的方法)
     imageCodeId = generateUUID();

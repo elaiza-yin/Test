@@ -9,12 +9,15 @@ $(function () {
     updateNewsData();
     // 首页分类切换
     $('.menu li').click(function () {
+        // 取到指定的分类的cid
         var clickCid = $(this).attr('data-cid');
+        // 遍历所有的 li 移除身上选中的效果
         $('.menu li').each(function () {
             $(this).removeClass('active')
         });
+        // 给当前分类添加选中的状态
         $(this).addClass('active');
-
+        // 如果点击的分类与当前分类不一致
         if (clickCid != currentCid) {
             // 记录当前分类id
             currentCid = clickCid ;
@@ -42,7 +45,7 @@ $(function () {
         var nowScroll = $(document).scrollTop();
 
         if ((canScrollHeight - nowScroll) < 100) {
-            // TODO 判断页数，去更新新闻数据
+            // 判断页数，去更新新闻数据
             // console.log("滚动到底部了")
             // 如果没有加载数据就加载数据
             if (!data_querying){
@@ -61,15 +64,15 @@ $(function () {
 function updateNewsData() {
     // 更新新闻数据
     var params = {
-        "cid":currentCid,
+        "cid":currentCid, // 默认为分类id
         "page":cur_page
     };
     $.get("/news_list",params,function (resp) {
         // 数据加载完毕,设置[正在加载数据]的变量为 false 代表当前没有加载数据
-        data_querying = false
+        data_querying = false;
         if (resp.errno == 0){
             // 给总页数据赋值
-            total_page = resp.data.total_page
+            total_page = resp.data.total_page;
             // 请求成功
             // 清除已有数据
             if (cur_page == 1){
