@@ -98,7 +98,6 @@ def index():
     for category in categories:
         category_li.append(category.to_dict())
 
-
     # 一和二和三共同存放数据的data字典容器
     data = {
         #  实例对象user去调用函数to_dict()
