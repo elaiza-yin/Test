@@ -73,11 +73,12 @@ def index():
     if user_id:
         try:
             user = User.query.get(user_id)
-            print("判断用户是否登入的查询:%s" %user)  # 测试:打印的是:<User 24>对象
+            print("判断用户是否登入的查询:%s" % user)  # 测试:打印的是:<User 24>对象
         except Exception as e:
             current_app.logger.error(e)
 
     # 二:右侧的新闻排行的逻辑(new_list是模型数据,也是对象)
+    news_list = []
     try:
         # 搜索数据库 : 按照最高点记率,排序6个
         news_list = News.query.order_by(News.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS).all()
@@ -86,10 +87,10 @@ def index():
         current_app.logger.error(e)
 
     # 因为news_list是模型对象,要转化成字典传给index.html
-    news_list_li = []
+    news_dict_li = []
     # 遍历对象列表,将对象的字典添加到字典列表中
     for news in news_list:
-        news_list_li.append(news.to_basic_dict())
+        news_dict_li.append(news.to_basic_dict())
 
     # 三:分类数据的新闻的显示(查询分类数据,通过模板形式渲染出来)
     categories = Category.query.all()
@@ -102,7 +103,7 @@ def index():
     data = {
         #  实例对象user去调用函数to_dict()
         "user" : user.to_dict() if user else None,
-        "news_dict_li" : news_list_li,
+        "news_dict_li" : news_dict_li,
         "category_li" : category_li
     }
 
