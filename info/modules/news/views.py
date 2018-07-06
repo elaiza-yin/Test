@@ -1,18 +1,26 @@
 from flask import current_app
+from flask import g
 from flask import render_template
+from flask import session
+
 from info import constants
-from info.models import News
+from info.models import News, User
+from info.utils.common import user_login_data
 from . import news_blu
 
 
 @news_blu.route('/<int:news_id>')
+@user_login_data
 def news_detail(news_id):
     """
     新闻详情
     :param news_id:
     :return:
     """
-    # 右侧的新闻排行的逻辑
+    # 采用装饰器和g变量获取用户登入的信息
+    user =  g.user
+
+    # :右侧的新闻排行的逻辑
     news_list = []
     try:
         # 搜索数据库 : 按照最高点记率,排序6个
