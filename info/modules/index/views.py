@@ -81,7 +81,7 @@ def index():
     news_list = []
     try:
         # 搜索数据库 : 按照最高点记率,排序6个
-        news_list = News.query.order_by(News.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS).all()
+        news_list = News.query.order_by(News.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS)
         print("排行的新闻查询:%s" %news_list)  # 打印的是对象
     except Exception as e:
         current_app.logger.error(e)

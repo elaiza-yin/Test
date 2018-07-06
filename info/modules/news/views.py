@@ -18,10 +18,10 @@ def news_detail(news_id):
     :param news_id:
     :return:
     """
-    # :采用装饰器和g变量获取用户登入的信息
-    user =  g.user
+    # 1:采用装饰器和g变量获取用户登入的信息
+    user = g.user
 
-    # :右侧的新闻排行的逻辑
+    # 2:右侧的新闻排行的逻辑
     news_list = []
     try:
         # 搜索数据库 : 按照最高点记率,排序6个
@@ -35,7 +35,7 @@ def news_detail(news_id):
     for news in news_list:
         news_dict_li.append(news.to_basic_dict())
 
-    # :给详情页查询对应的新闻数据
+    # 3:给详情页查询对应的新闻数据
     news = None
     try:
         news = News.query.get(news_id)
@@ -46,11 +46,18 @@ def news_detail(news_id):
         # 新闻详情数据如果查不出数据,就抛出404错误
         abort(404)
 
-    # 更新新闻的点击次数
+    # 4:更新新闻的点击次数
     news.clicks +=1
 
-    #
+    # 5:是否收藏的按钮展示
     is_collected = False
+    if user:
+        # 因为用户和新闻是多对多的关系，会有中间表，表示当前新闻是否在用户的收藏新闻表里
+        # collection_news 后面可以不用加all(),因为在表模型里面有dynamic，sqlalchemy会在使用的时候自动加载
+        if news in user.collection_news:
+            print(user.collection_news)
+            is_collected = True
+
     data = {
         "user" : user.to_dict() if user else None,
         "new_dict_li" : news_dict_li,
