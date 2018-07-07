@@ -55,15 +55,15 @@
         </div>
 
         <div class="comment_list_con">
-        {% for comment in data.comments %}
-            <div class="comment_list">
-                <div class="person_pic fl">
-                    <img src="{% if comment.user.avatar_url %}
-                        {{ comment.user.avatar_url }}
-                    {% else %}
-                        ../../static/news/images/person01.png
-                    {% endif %}" alt="用户图标">
-                </div>
+            {% for comment in data.comments %}
+                <div class="comment_list">
+                    <div class="person_pic fl">
+                        <img src="{% if comment.user.avatar_url %}
+                            {{ comment.user.avatar_url }}
+                        {% else %}
+                            ../../static/news/images/person01.png
+                        {% endif %}" alt="用户图标">
+        </div>
                 <div class="user_name fl">{{ comment.user.nick_name }}</div>
                 <div class="comment_text fl">{{ comment.content }}</div>
                 {% if comment.parent %}

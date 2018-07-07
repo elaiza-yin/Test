@@ -165,7 +165,7 @@ def news_detail(news_id):
             print(user.collection_news)
             is_collected = True
 
-    # 6:用户评论的显示
+    # 6:用户评论的显示(为了详情也刷新后,评论内容消失)
     comments = []
     try:
        comments = Comment.query.filter(Comment.news_id==news_id).order_by(Comment.create_time.desc()).all()
@@ -177,15 +177,12 @@ def news_detail(news_id):
         comment_dict = item.to_dict()
         comment_list.append(comment_dict)
 
-    # TODO 为了详情也刷新后,评论内容消失
-
-
     data = {
         "user" : user.to_dict() if user else None,
         "new_dict_li" : news_dict_li,
         "news" : news.to_dict(),
         "is_collected" : is_collected,
-        "comment" : comment_list
+        "comments" : comment_list
     }
 
     return render_template('news/detail.html', data=data)
