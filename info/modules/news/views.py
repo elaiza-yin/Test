@@ -4,6 +4,7 @@ from flask import g
 from flask import render_template
 from flask import request
 
+
 from info import constants, db
 from info.models import News, Comment
 from info.utils.common import user_login_data
@@ -16,7 +17,7 @@ from . import news_blu
 def news_comment():
     """评论新闻和回复其他人的评论(一个视图函数实现两个功能)"""
     # 0:获取用户登入状态
-    user = g.uesr()
+    user = g.user
     if not user:
         return jsonify(errno=RET.SESSIONERR, errmsg="用户不存在")
 
@@ -63,9 +64,8 @@ def news_comment():
         db.session.rollback()
 
     # 5:再查询数据库的评论数据,返回给前端
-    comment = comment.to_dict()
 
-    return jsonify(errno=RET.OK, errmsg="OK",comment=comment)
+    return jsonify(errno=RET.OK, errmsg="OK", data=comment.to_dict())
 
 
 @news_blu.route("/news_collect", methods=['POST'])
@@ -176,6 +176,9 @@ def news_detail(news_id):
     for item in comments:
         comment_dict = item.to_dict()
         comment_list.append(comment_dict)
+
+    # TODO 为了详情也刷新后,评论内容消失
+
 
     data = {
         "user" : user.to_dict() if user else None,
