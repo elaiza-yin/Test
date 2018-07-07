@@ -4,11 +4,68 @@ from flask import g
 from flask import render_template
 from flask import request
 
-from info import constants
+from info import constants, db
 from info.models import News, Comment
 from info.utils.common import user_login_data
 from info.utils.response_code import RET
 from . import news_blu
+
+
+@news_blu.route("/news_comment",methods=["POST"])
+@user_login_data
+def news_comment():
+    """评论新闻和回复其他人的评论(一个视图函数实现两个功能)"""
+    # 0:获取用户登入状态
+    user = g.uesr()
+    if not user:
+        return jsonify(errno=RET.SESSIONERR, errmsg="用户不存在")
+
+    # 1:获取请求参数
+    news_id = request.json.get("news_id")
+    comment_content = request.json.get("comment")
+    parent_id = request.json.get("parent_id")  # 因为一条评论可能没有人回复,导致parent_id不存在
+
+    # 2:判断参数
+    if not all([news_id,comment_content]):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    try:
+        news_id = int(news_id)
+        if parent_id:
+            parent_id = int(parent_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    try:
+        news = News.query.get(news_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="查询数据失败")
+
+    if not news:
+        return jsonify(errno=RET.NODATA, errmsg="新闻数据不存在")
+
+    # 3:初始化一个评论模型,并赋值评论数据到数据库
+    comment = Comment()
+    comment.user_id = user.id
+    comment.news_id = news_id
+    comment.content = comment_content
+    if parent_id:
+        comment.parent_id = parent_id
+
+    # 4:添加到数据库
+    try:
+        db.session.add(comment)
+        db.session.commit()
+    except Exception as e:
+        comment_content.logger.error(e)
+        db.session.rollback()
+
+    # 5:再查询数据库的评论数据,返回给前端
+    comment = comment.to_dict()
+
+    return jsonify(errno=RET.OK, errmsg="OK",comment=comment)
 
 
 @news_blu.route("/news_collect", methods=['POST'])
