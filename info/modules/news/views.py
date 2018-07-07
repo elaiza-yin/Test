@@ -4,8 +4,8 @@ from flask import g
 from flask import render_template
 from flask import request
 
-from info import constants, db
-from info.models import News
+from info import constants
+from info.models import News, Comment
 from info.utils.common import user_login_data
 from info.utils.response_code import RET
 from . import news_blu
@@ -46,16 +46,18 @@ def news_collect():
 
     if not news:
         return jsonify(errno=RET.NODATA, errmsg="新闻数据不存在")
+
     if action == "cancel_collect":
         # 4. 取消收藏
         if news in user.collection_news:
             user.collection_news.remove(news)
+
     else:
         # 4. 收藏新闻
         if news not in user.collection_news:
             user.collection_news.append(news)
 
-        return jsonify(errno=RET.DBERR, errmsg="保存失败")
+    return jsonify(errno=RET.OK, errmsg="保存成功")
 
 
 @news_blu.route('/<int:news_id>')
@@ -95,7 +97,7 @@ def news_detail(news_id):
         abort(404)
 
     # 4:更新新闻的点击次数
-    news.clicks +=1
+    news.clicks += 1
 
     # 5:是否收藏的按钮展示
     is_collected = False
@@ -106,12 +108,24 @@ def news_detail(news_id):
             print(user.collection_news)
             is_collected = True
 
+    # 6:用户评论的显示
+    comments = []
+    try:
+       comments = Comment.query.filter(Comment.news_id==news_id).order_by(Comment.create_time.desc()).all()
+    except Exception as e:
+        current_app.logger.error(e)
+
+    comment_list = []
+    for item in comments:
+        comment_dict = item.to_dict()
+        comment_list.append(comment_dict)
+
     data = {
         "user" : user.to_dict() if user else None,
         "new_dict_li" : news_dict_li,
         "news" : news.to_dict(),
-        "is_collected" : is_collected
-
+        "is_collected" : is_collected,
+        "comment" : comment_list
     }
 
     return render_template('news/detail.html', data=data)
