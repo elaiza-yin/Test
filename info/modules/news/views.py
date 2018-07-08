@@ -232,24 +232,45 @@ def news_detail(news_id):
             print(user.collection_news)
             is_collected = True
 
-    # 6:用户评论的显示(为了详情也刷新后,评论内容消失)
+    # 6:当前新闻所有的评论(为了详情也刷新后,评论内容消失)
     comments = []
     try:
        comments = Comment.query.filter(Comment.news_id==news_id).order_by(Comment.create_time.desc()).all()
     except Exception as e:
         current_app.logger.error(e)
 
-    comment_list = []
-    for item in comments:
-        comment_dict = item.to_dict()
-        comment_list.append(comment_dict)
+    # 7:需求:查询当前用户在当前的新闻点赞哪些评论
+    # 7.1 查询出当前新闻的所有评论
+    # 7.2 再查询被当前用户所点赞的评论
+    comment_like_ids = []
+    if g.user:
+        # 如果当前用户已登录
+        try:
+            comment_ids = [comment.id for comment in comments]
+            if len(comment_ids) > 0:
+                # 取到当前用户在当前新闻的所有评论点赞的记录
+                comment_likes = CommentLike.query.filter(CommentLike.comment_id.in_(comment_ids),
+                                                         CommentLike.user_id == g.user.id).all()
+                # 取出记录中所有的评论id
+                comment_like_ids = [comment_like.comment_id for comment_like in comment_likes]
+        except Exception as e:
+            current_app.logger.error(e)
+
+    comment_dict_li = []
+    for comment in comments:
+        comment_dict = comment.to_dict()
+        # 给评论的comment_dict字典添加一个键值对:False默认代表没有点赞
+        comment_dict['is_like'] = False
+        if comment.id in comment_like_ids:
+            comment_dict['is_like'] = True
+        comment_dict_li.append(comment_dict)
 
     data = {
         "user" : user.to_dict() if user else None,
         "new_dict_li" : news_dict_li,
         "news" : news.to_dict(),
         "is_collected" : is_collected,
-        "comments" : comment_list
+        "comments" : comment_dict_li
     }
 
     return render_template('news/detail.html', data=data)
