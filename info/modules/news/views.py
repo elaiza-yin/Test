@@ -55,17 +55,19 @@ def comment_like():
         # 查询指定的点赞模型
         comment_like_model = CommentLike.query.filter(CommentLike.user_id==user.id,CommentLike.comment_id==comment.id).first()
         if not comment_like_model:
-            comment_like_model = CommentLike()  # 指定的点赞模型
+            comment_like_model = CommentLike()
             comment_like_model.user_id = user.id
             comment_like_model.comment_id = comment_id
             db.session.add(comment_like_model)
+            comment.like_count += 1
 
     else:
         # 取消点赞
         # 查询指定的点赞模型
         comment_like_model = CommentLike.query.filter(CommentLike.user_id==user.id,CommentLike.comment_id==comment.id).first()
         if comment_like_model:
-            comment_like_model.delete()
+            db.session.delete(comment_like_model)
+            comment.like_count -= 1
 
     try:
         db.session.commit()
