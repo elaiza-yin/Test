@@ -11,20 +11,35 @@ from info.utils.common import user_login_data
 from info.utils.response_code import RET
 
 
+@profile_blu.route("/pic_info",methods=["GET","POST"])
+@user_login_data
+def pic_info():
+    """个人中心的头像设置[GET 和 POST]"""
+    user = g.user
+
+    # 请求为GET时:展示"头像设置"的界面(渲染模板)
+    if request.method == "GET":
+        data = {
+            "user":user.to_dict()
+        }
+        return render_template("news/user_pic_info.html",data=data)
+
+    # TODO 如果是POST就是修改数据
+
 @profile_blu.route("/base_info",methods=["GET","POST"])
 @user_login_data
 def base_info():
     """个人中心的基本资料[GET 和 POST]"""
     user = g.user
 
-    # 请求为GET时:展示基本资料的界面
+    # 请求为GET时:展示"基本资料"的界面(渲染模板)
     if request.method == "GET":
         data = {
             "user" : user.to_dict()
         }
         return render_template('news/user_base_info.html',data = data)
 
-    # 请求为POST时:修改用户个人信息
+    # 请求为POST时:修改用"基本资料"信息
     data_dict = request.json
     nick_name = data_dict.get("nick_name")
     gender = data_dict.get("gender")
