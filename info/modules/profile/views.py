@@ -5,9 +5,11 @@ from flask import render_template
 from flask import request
 from flask import session
 
+from info import constants
 from info import db
 from info.modules.profile import profile_blu
 from info.utils.common import user_login_data
+from info.utils.image_storage import storage
 from info.utils.response_code import RET
 
 
@@ -24,7 +26,36 @@ def pic_info():
         }
         return render_template("news/user_pic_info.html",data=data)
 
-    # TODO 如果是POST就是修改数据
+    # 请求为POST时:就是修改数据
+    # 1. 获取到上传的文件
+    try:
+        avatar_file = request.files.get("avatar").read()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="读取文件出错")
+
+    # 2. 再将文件上传到七牛云
+    try:
+        url = storage(avatar_file)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.THIRDERR, errmsg="上传图片错误")
+
+    # 3. 将头像信息更新到当前用户的模型中
+
+    # 设置用户模型相关数据(url图片的key)
+    user.avatar_url = url
+    # 将数据保存到数据库
+    try:
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        db.session.rollback()
+        return jsonify(errno=RET.DBERR, errmsg="保存用户数据错误")
+
+    # 4. 返回上传的结果<avatar_url>
+    return jsonify(errno=RET.OK, errmsg="OK", data={"avatar_url": constants.QINIU_DOMIN_PREFIX + url})
+
 
 @profile_blu.route("/base_info",methods=["GET","POST"])
 @user_login_data
