@@ -29,7 +29,7 @@ def get_news_list():
         return jsonify(errno=RET.PARAMERR,errmsg="参数错误")
 
     # 3. 查询数据并分页
-    filters = []
+    filters = [News.status == 0]  # 添加"已审核通过"的条件===>0代表审核通过
     if cid != 1:  # 查询的不是"最新分类"的数据
         # 添加分类id的过滤
         filters.append(News.category_id == cid)
