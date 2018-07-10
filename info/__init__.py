@@ -3,12 +3,13 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask
 # 在终端输入: pip install flask-session,再去导入 Session
 # 作用:可以用来指定 session 保存的位置
+from flask import g
+from flask import render_template
 from flask.ext.session import Session
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import CSRFProtect
 from flask.ext.wtf.csrf import generate_csrf
 from redis import StrictRedis
-
 
 from information.config import config
 
@@ -55,6 +56,14 @@ def creat_app(config_name):
     # 添加自定义过滤器
     from info.utils.common import do_index_class
     app.add_template_filter(do_index_class ,"index_class")
+
+    from info.utils.common import user_login_data
+    @app.errorhandler(404)
+    @user_login_data
+    def page_not_found(e):
+        user = g.user
+        data = {"user" : user.to_dict() if user else None}
+        return render_template("news/404.html",data=data)
 
     @app.after_request
     def after_request(response):
