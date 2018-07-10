@@ -18,6 +18,11 @@ def index():
 def login():
     # : 为GET请求时
     if request.method == "GET":
+        # 判断当前是否有登入,如果有登入就直接重定向到后台管理页面
+        user_id = session.get("user_id",None)
+        is_admin = session.get("is_admin",None)
+        if user_id and is_admin:
+            return redirect(url_for("admin.index"))
         return render_template("admin/login.html")
 
     # : 为POST请求时,前端会使用form表单的提交
