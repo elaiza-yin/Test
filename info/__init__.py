@@ -11,7 +11,7 @@ from flask.ext.wtf import CSRFProtect
 from flask.ext.wtf.csrf import generate_csrf
 from redis import StrictRedis
 
-from information.config import config
+from config import config
 
 
 # 在Flask很多拓展里面都可以可以初始化扩展的对象,然后再去调用 init_app 方法初始化
