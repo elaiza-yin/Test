@@ -35,40 +35,28 @@
                     <td>{{ news.clicks }}</td>
                     <td>{{ news.create_time }}</td>
                     <td>
-                        <a href="#" class="edit">编辑</a>
+                        <a href="{{ url_for('admin.news_edit_detail') }}?news_id={{ news.id }}" class="edit">编辑</a>
                     </td>
                 </tr>
             {% endfor %}
         </table>
     </div>
 
-<script>
-    $(function() {
-        $("#pagination").pagination({
-            currentPage: {{ data.current_page }},
-            totalPage: {{ data.total_page }},
-            callback: function(current) {
-                window.location = '/admin/news_edit?p=' + current
-            }
-        });
-    });
-</script>
-		
-		<div class="box">
-			<div id="pagination" class="page"></div>
-		</div>
+    <div class="box">
+        <div id="pagination" class="page"></div>
+    </div>
 
-        <script>
-			$(function() {
-				$("#pagination").pagination({
-					currentPage: 2,
-					totalPage: 3,
-					callback: function(current) {
-					    alert('ok!');
-					}
-				});
-			});
-		</script>
-	
+    <script>
+        $(function() {
+            $("#pagination").pagination({
+                currentPage: {{ data.current_page }},
+                totalPage: {{ data.total_page }},
+                callback: function(current) {
+                    window.location = '/admin/news_edit?p=' + current
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
