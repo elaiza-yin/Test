@@ -16,10 +16,9 @@ from info.utils.common import user_login_data
 
 @admin_blu.route('/news_review')
 def news_review():
-
     """返回待审核新闻列表"""
-
     page = request.args.get("p", 1)
+    keywords = request.args.get("keywords",None)
     try:
         page = int(page)
     except Exception as e:
@@ -30,8 +29,13 @@ def news_review():
     current_page = 1
     total_page = 1
 
+    filters = [News.status != 0]
+    # 搜索关键字功能的实现：
+    if keywords:
+        filters.append(News.title.contains(keywords))
+
     try:
-        paginate = News.query.filter(News.status != 0) \
+        paginate = News.query.filter(*filters) \
             .order_by(News.create_time.desc()) \
             .paginate(page, constants.ADMIN_NEWS_PAGE_MAX_COUNT, False)
 
